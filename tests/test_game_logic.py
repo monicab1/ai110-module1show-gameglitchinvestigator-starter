@@ -4,19 +4,20 @@ import os
 from logic_utils import check_guess
 
 def test_winning_guess():
-    # If the secret is 50 and guess is 50, it should be a win
-    result = check_guess(50, 50)
-    assert result == "Win"
+    # If the secret is 50 and guess is 50, it should be a win.
+    # check_guess returns a (outcome, message) pair, so we read the outcome.
+    outcome, message = check_guess(50, 50)
+    assert outcome == "Win"
 
 def test_guess_too_high():
-    # If secret is 50 and guess is 60, hint should be "Too High"
-    result = check_guess(60, 50)
-    assert result == "Too High"
+    # If secret is 50 and guess is 60, the outcome should be "Too High"
+    outcome, message = check_guess(60, 50)
+    assert outcome == "Too High"
 
 def test_guess_too_low():
-    # If secret is 50 and guess is 40, hint should be "Too Low"
-    result = check_guess(40, 50)
-    assert result == "Too Low"
+    # If secret is 50 and guess is 40, the outcome should be "Too Low"
+    outcome, message = check_guess(40, 50)
+    assert outcome == "Too Low"
 
 
 # ---------------------------------------------------------------------------
@@ -149,3 +150,36 @@ def test_secret_is_always_drawn_from_difficulty_range():
         assert args == ("low", "high"), (
             f"secret should be drawn from (low, high); found random.randint{args}"
         )
+
+
+# ---------------------------------------------------------------------------
+# Regression test for the "hint points the wrong way" glitch.
+#
+# The bug: check_guess paired each outcome with the WRONG direction message.
+# A guess that was too high said "Go HIGHER!" and a guess that was too low said
+# "Go LOWER!" -- the exact opposite of what the player should do. On even
+# attempts the secret also arrived as a string ("50"), which made the numbers
+# compare alphabetically instead of by value.
+#
+# These tests confirm the hint now matches the comparison.
+# ---------------------------------------------------------------------------
+
+
+def test_too_high_guess_tells_player_to_go_lower():
+    outcome, message = check_guess(60, 50)  # 60 is higher than 50
+    assert outcome == "Too High"
+    assert "LOWER" in message.upper(), f"a too-high guess should say LOWER, got: {message}"
+
+
+def test_too_low_guess_tells_player_to_go_higher():
+    outcome, message = check_guess(40, 50)  # 40 is lower than 50
+    assert outcome == "Too Low"
+    assert "HIGHER" in message.upper(), f"a too-low guess should say HIGHER, got: {message}"
+
+
+def test_hint_is_correct_even_when_secret_is_a_string():
+    # Reproduces the even-attempt path where the secret came in as a string.
+    # 9 is less than 10, so the player should be told to go HIGHER.
+    outcome, message = check_guess(9, "10")
+    assert outcome == "Too Low"
+    assert "HIGHER" in message.upper(), f"9 vs 10 should say HIGHER, got: {message}"
