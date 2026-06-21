@@ -42,6 +42,7 @@ def check_guess(guess, secret):
         g = str(guess)
         if g == secret:
             return "Win", "🎉 Correct!"
+        # FIXME: Logic breaks here
         if g > secret:
             return "Too High", "📈 Go HIGHER!"
         return "Too Low", "📉 Go LOWER!"
@@ -92,8 +93,10 @@ st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
+# FIXME: Logic breaks here
+# FIX: corrected on startup, attempts left initialization value
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+    st.session_state.attempts = 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -107,6 +110,7 @@ if "history" not in st.session_state:
 st.subheader("Make a guess")
 
 st.info(
+    # FIXME: Logic breaks here - incorrect hardcoded message
     f"Guess a number between 1 and 100. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
@@ -133,6 +137,7 @@ with col3:
 
 if new_game:
     st.session_state.attempts = 0
+    # FIXME: Logic breaks here
     st.session_state.secret = random.randint(1, 100)
     st.success("New game started.")
     st.rerun()
