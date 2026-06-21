@@ -92,7 +92,7 @@ st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
 # FIXME: Logic breaks here
 # FIX: corrected logic by adding OR st.session_state.get("secret_difficulty") != difficulty
-# FIX: corrected secret number logic to use variable value difficulty instead or random int low,high
+# FIX: corrected secret number logic to use variable value difficulty
 if "secret" not in st.session_state or st.session_state.get("secret_difficulty") != difficulty:
     st.session_state.secret = random.randint(low, high)
     st.session_state.secret_difficulty = difficulty
