@@ -58,7 +58,8 @@ st.subheader("Make a guess")
 
 st.info(
     # FIXME: Logic breaks here - incorrect hardcoded message
-    f"Guess a number between 1 and 100. "
+    # FIX: replaced hardcoded "1 and 100" with the {low}/{high} variables so the message matches the actual difficulty range
+    f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
