@@ -90,8 +90,12 @@ low, high = get_range_for_difficulty(difficulty)
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
-if "secret" not in st.session_state:
+# FIXME: Logic breaks here
+# FIX: corrected logic by adding OR st.session_state.get("secret_difficulty") != difficulty
+# FIX: corrected secret number logic to use variable value difficulty instead or random int low,high
+if "secret" not in st.session_state or st.session_state.get("secret_difficulty") != difficulty:
     st.session_state.secret = random.randint(low, high)
+    st.session_state.secret_difficulty = difficulty
 
 # FIXME: Logic breaks here
 # FIX: corrected on startup, attempts left initialization value
@@ -135,10 +139,12 @@ with col2:
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
+# FIXME: Logic breaks here
+# FIX: added logic to set the secret number based on the difficulty
 if new_game:
     st.session_state.attempts = 0
-    # FIXME: Logic breaks here
-    st.session_state.secret = random.randint(1, 100)
+    st.session_state.secret = random.randint(low, high)
+    st.session_state.secret_difficulty = difficulty
     st.success("New game started.")
     st.rerun()
 
