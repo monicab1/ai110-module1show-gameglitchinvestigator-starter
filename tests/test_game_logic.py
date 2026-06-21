@@ -183,3 +183,72 @@ def test_hint_is_correct_even_when_secret_is_a_string():
     outcome, message = check_guess(9, "10")
     assert outcome == "Too Low"
     assert "HIGHER" in message.upper(), f"9 vs 10 should say HIGHER, got: {message}"
+
+
+# ---------------------------------------------------------------------------
+# Regression test for the "hardcoded range message" glitch.
+#
+# The bug: the st.info banner read `f"Guess a number between 1 and 100. "`,
+# with the bounds hardcoded as the literals 1 and 100. The actual range comes
+# from get_range_for_difficulty (Easy 1-20, Hard 1-50), so on those modes the
+# on-screen instruction told the player to guess numbers that could never be
+# the secret.
+#
+# The fix interpolates the {low}/{high} variables instead of hardcoding the
+# numbers. As with the other UI glitches, we inspect the source with `ast`
+# rather than importing app.py (which would launch Streamlit).
+# ---------------------------------------------------------------------------
+
+
+def _guess_message_fstring():
+    """Return (literal_text, interpolated_names) for the f-string that renders
+    the "Guess a number between ..." banner in app.py.
+
+    literal_text is the concatenated constant chunks of the f-string; the
+    interpolated values (e.g. {low}) are dropped from it. interpolated_names is
+    the set of bare variable names referenced inside the f-string's {...} slots.
+    """
+    with open(APP_PATH, encoding="utf-8") as f:
+        tree = ast.parse(f.read())
+
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.JoinedStr):
+            continue
+
+        literal_text = "".join(
+            part.value
+            for part in node.values
+            if isinstance(part, ast.Constant) and isinstance(part.value, str)
+        )
+        if "Guess a number between" not in literal_text:
+            continue
+
+        names = set()
+        for part in node.values:
+            if isinstance(part, ast.FormattedValue):
+                for sub in ast.walk(part.value):
+                    if isinstance(sub, ast.Name):
+                        names.add(sub.id)
+        return literal_text, names
+
+    raise AssertionError(
+        'Could not find the "Guess a number between ..." f-string in app.py'
+    )
+
+
+def test_guess_message_does_not_hardcode_the_range():
+    # The old banner said "between 1 and 100" literally. That hardcoded range
+    # must be gone so the message can never contradict the difficulty.
+    literal_text, _ = _guess_message_fstring()
+    assert "1 and 100" not in literal_text, (
+        f'banner still hardcodes the range: "{literal_text}"'
+    )
+
+
+def test_guess_message_interpolates_low_and_high():
+    # The fix drives the displayed range from the (low, high) variables, so the
+    # banner always matches whatever get_range_for_difficulty returned.
+    _, names = _guess_message_fstring()
+    assert {"low", "high"} <= names, (
+        f"banner should interpolate low and high; found names: {names}"
+    )
