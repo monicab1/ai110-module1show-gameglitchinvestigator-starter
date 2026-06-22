@@ -47,7 +47,7 @@ I used Claude: Sonnet and Claude Opus 4.8
 
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 
-The AI correctly diagnosed that the "Guess a number between 1 and 100" banner was wrong because the bounds were hardcoded as literal text instead of being pulled from the low/high variables that get_range_for_difficulty already produces. It suggested replacing the line with f"Guess a number between {low} and {high}." so the message would always match the active difficulty (Easy 1–20, Hard 1–50). I verified the fix two ways: the AI wrote ast-based regression tests in tests/test_game_logic.py asserting the banner no longer contains "1 and 100" and that it interpolates low and high, and the full suite passed (11/11). This confirmed the displayed range now tracks the real game range rather than a static, incorrect number.
+The AI correctly diagnosed that the "Guess a number between 1 and 100" banner was wrong because the bounds were hardcoded as literal text instead of being pulled from the low/high variables that get_range_for_difficulty already produces. It suggested replacing the line with f"Guess a number between {low} and {high}." so the message would always match the active difficulty (Easy 1–20, Hard 1–50). I verified the fix two ways: the AI wrote ast-based regression tests in tests/test_game_logic.py asserting the banner no longer contains "1 and 100" and that it interpolates low and high, and the full suite passed (13/13). This confirmed the displayed range now tracks the real game range rather than a static, incorrect number.
 
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
 
