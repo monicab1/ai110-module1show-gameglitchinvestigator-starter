@@ -41,18 +41,22 @@ Document at least 3 bugs you found. Add rows as needed.
 ## 2. How did you use AI as a teammate?
 The assignment required us to make git commits, and I wanted to see all of those changes show up in my own GitHub account. I had never forked a project before, so I thought I had set it up correctly. But once I was ready to start committing, Claude pointed out that my project in VS Code was not actually connected to my GitHub account the way I wanted it to be. Even though I had already started working in VS Code, Claude took the lead and walked me through fixing the connection. That way I was properly set up to track my work going forward.
 
+---
+
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
 I used Claude: Sonnet and Claude Opus 4.8
 
+---
 
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 
 The AI correctly diagnosed that the "Guess a number between 1 and 100" banner was wrong because the bounds were hardcoded as literal text instead of being pulled from the low/high variables that get_range_for_difficulty already produces. It suggested replacing the line with f"Guess a number between {low} and {high}." so the message would always match the active difficulty (Easy 1–20, Hard 1–50). I verified the fix two ways: the AI wrote ast-based regression tests in tests/test_game_logic.py asserting the banner no longer contains "1 and 100" and that it interpolates low and high, and the full suite passed (13/13). This confirmed the displayed range now tracks the real game range rather than a static, incorrect number.
 
+---
+
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
 
 One AI suggestion that turned out to be misleading was about my third bug, the one where the "attempts left" count didn't go down right away. The AI told me the cause was that the attempts counter started at 1 instead of 0, and that this was why the number looked off. I verified this by changing the starting value to 0 and playing the game again — it fixed the very first screen (attempts allowed and attempts left finally matched at the start), but the real problem was still there. When I played on Hard and used all 5 guesses, the screen still said "Out of attempts!" while showing 1 attempt left, so the fix hadn't actually solved Bug3. That showed me the AI had explained the wrong cause: the count was really lagging because the screen showed the number before my guess was counted, not because of the starting value.
-
 
 ---
 
@@ -64,10 +68,13 @@ One AI suggestion that turned out to be misleading was about my third bug, the o
 2. I used the diff tool to compare the before and after changes in the code to manually inspect/debug to determine whether the bug was fixed.
 3. I re-ran the game to view the change(s) in real time to verify the correct expected behavior occurred
 
+---
+
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
 The main test I ran was a manual one. On Hard difficulty I get 5 attempts, so I entered 50, 40, 30, 20, and 10 one at a time and watched the "attempts left" number after each guess. Before the fix, the count lagged behind — it still said "1 left" at the same moment the game showed "Out of attempts!", which didn't make sense. After the fix, I replayed the exact same five guesses and the count dropped correctly each time, landing on 0 right when the game ended. This showed me the display was finally reading the count after my guess was counted, instead of before it.
 
+---
 
 - Did AI help you design or understand any tests? How?
 
@@ -79,6 +86,7 @@ Yes, AI helped a lot on the testing side. At first I assumed a normal pytest che
 
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 
+Streamlit works by re-running my whole program from top to bottom every time I click something on the page. The catch is that this wipes out my variables each time, like the program forgetting everything and starting fresh. Session state is a little memory box that holds onto the things I want to keep, so they survive each restart. So reruns are the constant fresh start, and session state is what remembers my information through it.
 ---
 
 ## 5. Looking ahead: your developer habits
