@@ -39,15 +39,20 @@ Document at least 3 bugs you found. Add rows as needed.
 ---
 
 ## 2. How did you use AI as a teammate?
-
+The assignment required us to make git commits, and I wanted to see all of those changes show up in my own GitHub account. I had never forked a project before, so I thought I had set it up correctly. But once I was ready to start committing, Claude pointed out that my project in VS Code was not actually connected to my GitHub account the way I wanted it to be. Even though I had already started working in VS Code, Claude took the lead and walked me through fixing the connection. That way I was properly set up to track my work going forward.
 
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-
+I used Claude: Sonnet
 
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 
+One AI suggestion that turned out to be correct was the real cause of my attempts bug. The AI explained that the "attempts left" number was being shown on screen before my guess was actually counted, and that refreshing the screen after each guess would fix it. I verified this by replaying the game on Hard with 50, 40, 30, 20, 10 — the count now dropped correctly all the way down to 0 right when "Out of attempts!" appeared, instead of getting stuck at 1. We also wrote an automated test for it, so the fix is locked in and I can re-check it later.
+
 
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
+
+One AI suggestion that turned out to be misleading was about my third bug, the one where the "attempts left" count didn't go down right away. The AI told me the cause was that the attempts counter started at 1 instead of 0, and that this was why the number looked off. I verified this by changing the starting value to 0 and playing the game again — it fixed the very first screen (attempts allowed and attempts left finally matched at the start), but the real problem was still there. When I played on Hard and used all 5 guesses, the screen still said "Out of attempts!" while showing 1 attempt left, so the fix hadn't actually solved Bug3. That showed me the AI had explained the wrong cause: the count was really lagging because the screen showed the number before my guess was counted, not because of the starting value.
+
 
 ---
 
