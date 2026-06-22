@@ -94,7 +94,16 @@ Streamlit works by re-running my whole program from top to bottom every time I c
 - What is one habit or strategy from this project that you want to reuse in future labs or projects?
   - This could be a testing habit, a prompting strategy, or a way you used Git.
 
+  I would make sure that Claude understand I want to view the Ai feedback before being prompted to approve a suggested change. According to Claude VS Code has a built in popup box that requires approval however; the popup box completely blocks any feedback that Claude has given me regarding a previous prompt. This popup box encourages blindly clicking Yes approve to changes I have not fully read and understand. I constantly fought against this since the assignment asked to use separate chat windows for each fix, so I had to keep re-explaining the expectation.
+
+  ---
+
 - What is one thing you would do differently next time you work with AI on a coding task?
 
+To keep my results uniform, if a series of tasks, such as identify, repair, test, commit is required, I will create a script of prompts to ensure that I am getting uniform results across different tasks and it will speed up the process.
+
+---
 
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+
+Ai generated code is not a replacement for human analysis or human evaluation. You cannot accept Ai code blindly, you must review it and test it and verify it. AI generatated code can sound very technical and official but do not let that trick into believing everything that it tells you.
