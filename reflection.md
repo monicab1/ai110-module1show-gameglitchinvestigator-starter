@@ -5,21 +5,21 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 ## 1. What was broken when you started?
 
 - What did the game look like the first time you ran it?
-When I first ran the game, the very first thing that stood out to me as 'broken' when I first started it defaults to Normal difficulty. In the left panel, it shows 'attempts allowed: 8'. However, glancing to the right, the screen shows 'attempts left: 7'. I expected attempts left and attempts allowed to match at the start of a game.
+When I first ran the game, the very first thing that stood out to me as 'broken' was that the game defaults to Normal difficulty when I first started it. In the left panel, it shows 'attempts allowed: 8'. However, glancing to the right, the screen shows 'attempts left: 7'. I expected attempts left and attempts allowed to match at the start of a game.
 
 - List at least two concrete bugs you noticed at the start  
   (for example: "the hints were backwards").
 
   Bug1: (the secret number was out of range)
-  One concrete bug I observed was, since the game started on 'Normal' difficulty. I selected 'Easy' difficulty and chose new game. The range for easy is 1-20; therefore, I expected the Developer Debug secret number to fall in the specified range of 1-20; however the updated secret number for 'Easy' was 93, which is out of the stated range.
+  One concrete bug I observed: since the game started on 'Normal' difficulty, I selected 'Easy' difficulty and chose New Game. The range for Easy is 1-20; therefore, I expected the Developer Debug secret number to fall in the specified range of 1-20; however, the updated secret number for 'Easy' was 93, which is out of the stated range.
   Cause in code: the "New Game" handler in app.py hardcoded `random.randint(1, 100)` instead of drawing from the selected difficulty's (low, high) range.
 
   Bug2: (the hints are incorrect)
-  The secret number was 46, I made a guess of 4. The hint told me to go lower. I expected the hint to instruct me to go higher.
+  The secret number was 46, and I made a guess of 4. The hint told me to go lower. I expected the hint to instruct me to go higher.
   Cause in code: `check_guess` in logic_utils.py paired each outcome with the opposite direction message (a too-low guess said "Go LOWER" instead of "Go HIGHER").
 
   Bug3: (message attempts left does not update with guess submission)
-  On hard difficulty you are allowed 5 attempts. I entered 50,40,30,20,10. Below the hint message box, I was shown the message 'Out of attempts!' However, my attempts left showed 1, even though the game was over. I expected that if I was allowed 5 attempts, after submitting my first guess, the attempts left would be one less but the decrement does not occur until I make another guess after that.
+  On Hard difficulty you are allowed 5 attempts. I entered 50, 40, 30, 20, 10. Below the hint message box, I was shown the message 'Out of attempts!' However, my attempts left showed 1, even though the game was over. I expected that if I was allowed 5 attempts, after submitting my first guess, the attempts left would be one less but the decrement does not occur until I make another guess after that.
   Cause in code: in `app.py` the "Attempts left" message (`attempt_limit - st.session_state.attempts`) is drawn near the top of the script, but `st.session_state.attempts` is not incremented until the Submit handler runs further down, and the script never re-runs after that increment. As a result the displayed count always reflected the state from *before* the current guess, so it lagged one submission behind. The fix moves the increment into the valid-guess branch of the Submit handler and calls `st.rerun()` afterward, so the display redraws from the updated count.
 
   BugX: observational not operational
@@ -66,7 +66,7 @@ One AI suggestion that turned out to be misleading was about my third bug, the o
 
 1. I evaluated the results of the tests. I made sure I saw PASSED results.
 2. I used the diff tool to compare the before and after changes in the code to manually inspect/debug to determine whether the bug was fixed.
-3. I re-ran the game to view the change(s) in real time to verify the correct expected behavior occurred
+3. I re-ran the game to view the change(s) in real time to verify the correct expected behavior occurred.
 
 ---
 
@@ -87,6 +87,7 @@ Yes, AI helped a lot on the testing side. At first I assumed a normal pytest che
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 
 Streamlit works by re-running my whole program from top to bottom every time I click something on the page. The catch is that this wipes out my variables each time, like the program forgetting everything and starting fresh. Session state is a little memory box that holds onto the things I want to keep, so they survive each restart. So reruns are the constant fresh start, and session state is what remembers my information through it.
+
 ---
 
 ## 5. Looking ahead: your developer habits
@@ -94,16 +95,16 @@ Streamlit works by re-running my whole program from top to bottom every time I c
 - What is one habit or strategy from this project that you want to reuse in future labs or projects?
   - This could be a testing habit, a prompting strategy, or a way you used Git.
 
-  I would make sure that Claude understand I want to view the Ai feedback before being prompted to approve a suggested change. According to Claude VS Code has a built in popup box that requires approval however; the popup box completely blocks any feedback that Claude has given me regarding a previous prompt. This popup box encourages blindly clicking Yes approve to changes I have not fully read and understand. I constantly fought against this since the assignment asked to use separate chat windows for each fix, so I had to keep re-explaining the expectation.
+  I would make sure that Claude understands I want to view the AI feedback before being prompted to approve a suggested change. According to Claude, VS Code has a built-in popup box that requires approval; however, the popup box completely blocks any feedback that Claude has given me regarding a previous prompt. This popup box encourages blindly clicking 'Yes, approve' on changes I have not fully read or understood. I constantly fought against this, since the assignment asked me to use separate chat windows for each fix, so I had to keep re-explaining the expectation.
 
   ---
 
 - What is one thing you would do differently next time you work with AI on a coding task?
 
-To keep my results uniform, if a series of tasks, such as identify, repair, test, commit is required, I will create a script of prompts to ensure that I am getting uniform results across different tasks and it will speed up the process.
+To keep my results uniform, if a series of tasks — such as identify, repair, test, and commit — is required, I will create a script of prompts to ensure that I get uniform results across the different tasks, and it will speed up the process.
 
 ---
 
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
 
-Ai generated code is not a replacement for human analysis or human evaluation. You cannot accept Ai code blindly, you must review it and test it and verify it. AI generatated code can sound very technical and official but do not let that trick into believing everything that it tells you.
+AI-generated code is not a replacement for human analysis or human evaluation. You cannot accept AI code blindly; you must review it, test it, and verify it. AI-generated code can sound very technical and official, but do not let that trick you into believing everything it tells you.
