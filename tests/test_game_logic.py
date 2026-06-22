@@ -1,7 +1,7 @@
 import ast
 import os
 
-from logic_utils import check_guess
+from logic_utils import check_guess, get_attempt_limit
 
 def test_winning_guess():
     # If the secret is 50 and guess is 50, it should be a win.
@@ -252,3 +252,18 @@ def test_guess_message_interpolates_low_and_high():
     assert {"low", "high"} <= names, (
         f"banner should interpolate low and high; found names: {names}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Test for the attempt-limit logic refactored out of app.py.
+#
+# The per-difficulty attempt limits used to be a hardcoded dict inside app.py
+# (UI code). They now live in get_attempt_limit(), so the logic is testable on
+# its own -- matching how get_range_for_difficulty already worked.
+# ---------------------------------------------------------------------------
+
+
+def test_attempt_limit_per_difficulty():
+    assert get_attempt_limit("Easy") == 6
+    assert get_attempt_limit("Normal") == 8
+    assert get_attempt_limit("Hard") == 5

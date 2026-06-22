@@ -3,6 +3,7 @@ import streamlit as st
 
 from logic_utils import (
     get_range_for_difficulty,
+    get_attempt_limit,
     parse_guess,
     check_guess,
     update_score,
@@ -21,12 +22,7 @@ difficulty = st.sidebar.selectbox(
     index=1,
 )
 
-attempt_limit_map = {
-    "Easy": 6,
-    "Normal": 8,
-    "Hard": 5,
-}
-attempt_limit = attempt_limit_map[difficulty]
+attempt_limit = get_attempt_limit(difficulty)
 
 low, high = get_range_for_difficulty(difficulty)
 
