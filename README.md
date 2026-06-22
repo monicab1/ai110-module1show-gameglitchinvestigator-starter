@@ -66,7 +66,7 @@ Describe your fixed game in numbered steps so a reader can follow along without 
    when "Attempts left" reaches 0.)
 
 
-**Screenshot** *(optional)*: <!-- ![Winning Game](image.png)Insert a screenshot of your fixed, winning game here -->
+**Screenshot**: ![Winning Game](image.png)
 
 ## 🧪 Test Results
 
