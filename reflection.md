@@ -42,12 +42,12 @@ Document at least 3 bugs you found. Add rows as needed.
 The assignment required us to make git commits, and I wanted to see all of those changes show up in my own GitHub account. I had never forked a project before, so I thought I had set it up correctly. But once I was ready to start committing, Claude pointed out that my project in VS Code was not actually connected to my GitHub account the way I wanted it to be. Even though I had already started working in VS Code, Claude took the lead and walked me through fixing the connection. That way I was properly set up to track my work going forward.
 
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-I used Claude: Sonnet
+I used Claude: Sonnet and Claude Opus 4.8
+
 
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 
-One AI suggestion that turned out to be correct was the real cause of my attempts bug. The AI explained that the "attempts left" number was being shown on screen before my guess was actually counted, and that refreshing the screen after each guess would fix it. I verified this by replaying the game on Hard with 50, 40, 30, 20, 10 — the count now dropped correctly all the way down to 0 right when "Out of attempts!" appeared, instead of getting stuck at 1. We also wrote an automated test for it, so the fix is locked in and I can re-check it later.
-
+The AI correctly diagnosed that the "Guess a number between 1 and 100" banner was wrong because the bounds were hardcoded as literal text instead of being pulled from the low/high variables that get_range_for_difficulty already produces. It suggested replacing the line with f"Guess a number between {low} and {high}." so the message would always match the active difficulty (Easy 1–20, Hard 1–50). I verified the fix two ways: the AI wrote ast-based regression tests in tests/test_game_logic.py asserting the banner no longer contains "1 and 100" and that it interpolates low and high, and the full suite passed (11/11). This confirmed the displayed range now tracks the real game range rather than a static, incorrect number.
 
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
 
@@ -60,10 +60,18 @@ One AI suggestion that turned out to be misleading was about my third bug, the o
 
 - How did you decide whether a bug was really fixed?
 
+1. I evaluated the results of the tests. I made sure I saw PASSED results.
+2. I used the diff tool to compare the before and after changes in the code to manually inspect/debug to determine whether the bug was fixed.
+3. I re-ran the game to view the change(s) in real time to verify the correct expected behavior occurred
 
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
+The main test I ran was a manual one. On Hard difficulty I get 5 attempts, so I entered 50, 40, 30, 20, and 10 one at a time and watched the "attempts left" number after each guess. Before the fix, the count lagged behind — it still said "1 left" at the same moment the game showed "Out of attempts!", which didn't make sense. After the fix, I replayed the exact same five guesses and the count dropped correctly each time, landing on 0 right when the game ended. This showed me the display was finally reading the count after my guess was counted, instead of before it.
+
+
 - Did AI help you design or understand any tests? How?
+
+Yes, AI helped a lot on the testing side. At first I assumed a normal pytest checking the math would prove my fix, but the AI pointed out that kind of test would pass on both the broken and the fixed code, so it wouldn't actually catch the bug. It explained that my bug lived in how the screen updated, not in a simple calculation, so a real test had to run the app and click through the guesses like I did. With that in mind, the AI helped design an automated test that plays the game the same way and checks the count after each guess. That taught me to ask whether a test can actually fail before I trust that it passed.
 
 ---
 
