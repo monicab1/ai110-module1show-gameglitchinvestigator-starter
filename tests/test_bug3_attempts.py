@@ -23,7 +23,9 @@ APP = str(APP_DIR / "app.py")
 
 def _start_hard():
     """Launch the app and switch to Hard difficulty (5 attempts, range 1-50)."""
-    at = AppTest.from_file(APP).run()
+    # A generous timeout: the first AppTest run in a process pays a one-time
+    # cold-start cost (Streamlit's lazy imports) that can exceed the 3s default.
+    at = AppTest.from_file(APP, default_timeout=30).run()
     at.selectbox[0].set_value("Hard").run()
     return at
 
